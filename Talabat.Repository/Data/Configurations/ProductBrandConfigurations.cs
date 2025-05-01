@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Talabat.Core;
+using Talabat.Core.Entities;
 
 namespace Talabat.Repository.Data.Configurations
 {

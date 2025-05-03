@@ -9,10 +9,32 @@ namespace Talabat.Core.Specifications
 {
     public class ProductWithBrandAndTypeSpecifications : BaseSpecifications<Product>
     {
-        public ProductWithBrandAndTypeSpecifications() : base()
+        public ProductWithBrandAndTypeSpecifications(ProductSpecParams Params) :
+            base(P =>
+            (!Params.BrandId.HasValue || P.ProductBrandId == Params.BrandId) // Filter by ProductType
+            &&
+            (!Params.TypeId.HasValue || P.ProductTypeId == Params.TypeId) // Filter by ProductType
+            )
         {
             Includes.Add(P => P.ProductType);
             Includes.Add(P => P.ProductBrand);
+            if (!string.IsNullOrEmpty(Params.Sort))
+            {
+                switch (Params.Sort)
+                {
+                    case "PriceAsc":
+                        AddOrderBy(P => P.Price);
+                        break;
+                    case "PriceDesc":
+                        AddOrderByDescending(P => P.Price);
+                        break;
+                    default:
+                        AddOrderBy(P => P.Name);
+                        break;
+                }
+            }
+
+            ApplayPAgination(Params.PageSize * (Params.PageIndex - 1), Params.PageSize);
         }
         public ProductWithBrandAndTypeSpecifications(int id) : base(P => P.Id == id)
         {

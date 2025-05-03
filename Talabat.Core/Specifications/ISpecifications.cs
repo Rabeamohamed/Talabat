@@ -15,5 +15,19 @@ namespace Talabat.Core.Specifications
 
         // Signature for Property for List Of Includes
         public List<Expression<Func<T, object>>> Includes { get; set; }
+
+        // Signature for Property for Order By
+
+        public Expression<Func<T, object>> OrderBy { get; set; }
+
+        // Signature for Property for Order By Descending
+        public Expression<Func<T, object>> OrderByDescending { get; set; }
+
+        public int Take { get; set; }
+
+        public int Skip { get; set; }
+
+        public bool IsPagingEnabled { get; set; }
     }
+
 }

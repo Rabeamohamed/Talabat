@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Talabat.APIs.Errors;
+using Talabat.APIs.Extentions;
 using Talabat.APIs.Helpers;
 using Talabat.APIs.MiddleWares;
 using Talabat.Core.Repositories;
@@ -27,29 +28,12 @@ namespace Talabat.APIs
             builder.Services.AddDbContext<StoreContext>(Options =>
             {
                 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            }); 
-
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
-            //builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
-            builder.Services.AddAutoMapper(typeof(MappingProfiles)); // Add AutoMapper to the services
-
-            builder.Services.Configure<ApiBehaviorOptions>(Options =>
-            {
-                Options.InvalidModelStateResponseFactory = (actionContext) =>
-                 {
-                     var errors = actionContext.ModelState.Where(P => P.Value.Errors.Count > 0)
-                         .SelectMany(P => P.Value.Errors)
-                         .Select(E => E.ErrorMessage).ToArray();
-
-                     var ValidationErrorResponse = new ApiValidationErrorResponse()
-                     {
-                         Errors = errors
-                     };
-                     return new BadRequestObjectResult(ValidationErrorResponse);
-                 };
             });
+
             #endregion
+
+            builder.Services.AddApplicationServices();
+
 
             var app = builder.Build();
 
@@ -82,8 +66,8 @@ namespace Talabat.APIs
             if (app.Environment.IsDevelopment())
             {
                 app.UseMiddleware<ExceptionMiddleWare>();
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerMiddleWares();
+
             }
 
             app.UseStatusCodePagesWithRedirects("errors/{0}");
@@ -95,6 +79,7 @@ namespace Talabat.APIs
 
 
             app.MapControllers(); 
+
             #endregion
 
             app.Run();

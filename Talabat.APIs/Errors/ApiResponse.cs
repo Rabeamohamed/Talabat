@@ -12,6 +12,10 @@ namespace Talabat.APIs.Errors
             Message = message ?? GetDefaultMessageForStatusCode(StatusCode);
         }
 
+        public ApiResponse()
+        {
+        }
+
         private string? GetDefaultMessageForStatusCode(int? statusCode)
         {
             return statusCode switch

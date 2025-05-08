@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Helpers;
+using Talabat.Core;
 using Talabat.Core.Repositories;
+using Talabat.Core.Services;
 using Talabat.Repository;
+using Talabat.Services;
 
 namespace Talabat.APIs.Extentions
 {
@@ -14,7 +17,6 @@ namespace Talabat.APIs.Extentions
             Services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
             Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             Services.AddAutoMapper(typeof(MappingProfiles)); // Add AutoMapper to the services
-
             Services.Configure<ApiBehaviorOptions>(Options =>
             {
                 Options.InvalidModelStateResponseFactory = (actionContext) =>
@@ -30,6 +32,8 @@ namespace Talabat.APIs.Extentions
                     return new BadRequestObjectResult(ValidationErrorResponse);
                 };
             });
+            Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            Services.AddScoped<IOrderService, OrderService>();
 
             return Services;
         }

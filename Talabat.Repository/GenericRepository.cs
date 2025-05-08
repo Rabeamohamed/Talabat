@@ -50,5 +50,14 @@ namespace Talabat.Repository
         {
             return await ApplaySecification(Spec).CountAsync();
         }
+
+        public async Task AddAsync(T Item)
+        =>await _dbContext.Set<T>().AddAsync(Item);
+
+        public void Update(T Item)
+        => _dbContext.Set<T>().Update(Item);
+
+        public void Delete(T Item)
+        => _dbContext.Set<T>().Remove(Item);
     }
 }
